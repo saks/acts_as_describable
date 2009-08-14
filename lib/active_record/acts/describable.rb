@@ -18,8 +18,12 @@ module ActiveRecord
 					when Symbol
 						option, options = options, {}
 						options[option.to_s.size > 2 ? :form : :locale] = option
+					when Hash
+					#do nothing
 				end
 				options = {:form => :short, :locale => I18n.locale}.update options
+
+				return any_description_for self if :any == options[:form]
 
 				validate_locale options[:locale]
 				validate_form options[:form]
@@ -52,12 +56,29 @@ module ActiveRecord
 
 			private
 
+			def any_description_for object
+				locale = I18n.locale
+
+				data = object.connection.select_rows("
+					select
+						short_text, long_text, locale
+					from
+						#{contruct_table_name}
+					where
+						model_id = #{self.id}
+				".squish).sort do |a, b|
+					a[2] == locale ? -1 : 1 #sort by prefered locale
+				end.map do |arr|
+					[arr[0], arr[1]].compact #remove nil and locale
+				end.flatten.first || ''
+			end
+
 			def validate_form(form)
-				error "Unknown description form ``#{options[:form]}'',  must be :short, or :long" unless [:long, :short].include? form
+				error "Unknown description form ``#{form}'',  must be :short, or :long" unless [:long, :short].include? form
 			end
 
 			def validate_locale(locale)
-				error "Invalid locale ``#{locale}''" unless locale or locale.empty?
+				error "Invalid locale ``#{locale}''" if locale.nil? or locale.to_s.empty?
 			end
 
 			def error(text)

@@ -35,7 +35,6 @@ class ActiveSupport::TestCase
 		end
 		ActiveRecord::Base.establish_connection(config[db_adapter])
 		load(File.dirname(__FILE__) + "/schema.rb")
-		Fixtures.create_fixtures(FIXTURES_PATH, 'sites')
 	end
 
 end

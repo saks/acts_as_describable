@@ -12,6 +12,7 @@ class ActsAsDescribableTest < ActiveSupport::TestCase
 		@long_en_text = 'long en description'
 		@short_ru_text = 'short ru description'
 		@long_ru_text = 'long ru description'
+		@long_be_text = 'long be description'
 
 		@site = Site.create!
 		I18n.locale = 'en'
@@ -63,6 +64,35 @@ class ActsAsDescribableTest < ActiveSupport::TestCase
 
 		@site.set_description!(:short, :ru, @short_ru_text)
 		assert_equal(@short_ru_text, @site.description)
+	end
+
+	test 'should return empty string for any description' do
+		assert_equal '', @site.description(:any)
+	end
+
+	test 'should return any existing description' do
+		@site.set_description! :long, :be, @long_be_text
+		assert_equal @long_be_text, @site.description(:any)
+	end
+
+	test 'should prefer I18n locale for any description' do
+		I18n.locale = 'be'
+		@site.set_description! :long, :en, @long_en_text
+		@site.set_description! :long, :be, @long_be_text
+		assert_equal @long_be_text, @site.description(:any)
+	end
+
+	test 'should fail witout all parameters passed to set_description!' do
+		assert_raise(ArgumentError) { @site.set_description! }
+		assert_raise(ArgumentError) { @site.set_description! :short }
+		assert_raise(ArgumentError) { @site.set_description! :short, :en }
+		assert_raise(ArgumentError) { @site.set_description! :en, :short }
+	end
+
+	test 'should fail with invalid arguments passed to description' do
+		assert_raise(ArgumentError) { @site.description(:qwe) }
+		assert_raise(ArgumentError) { @site.description(:form => :invalid) }
+		assert_raise(ArgumentError) { @site.description(:form => :short, :locale => '')}
 	end
 
 end
