@@ -1,13 +1,45 @@
-ActsAsDescribable
-=================
+= acts_as_describable
 
-Introduction goes here.
+== Installation
 
+  ruby script/plugin install git://github.com/saks/acts_as_describable.git
 
-Example
-=======
+== Usage
 
-Example goes here.
+=== Prepare database
 
+Generate and apply the migration:
 
-Copyright (c) 2009 [name of plugin creator], released under the MIT license
+  ruby script/generate acts_as_describable model_name
+  rake db:migrate
+
+=== Basic descripting
+
+Let's suppose users have many products and we want those products to have multilanguage descriptions.
+The first step is to add +acts_as_describable+ to the Product class:
+
+  class Product < ActiveRecord::Base
+    acts_as_describable
+  end
+
+We can now use the description method provided by acts_as_describable, <tt>#description</tt> and <tt>#set_description!</tt>.
+
+  p = Product.find(:first)
+  p.description # ''
+  p.set_description!(:short, :en, 'some description in english')
+  p.description # 'some description in english'
+
+You can also use it more accessible.
+
+  p.description :en # 'some description in english'
+
+  p.set_description!(:short, :ru, 'some description in russian')
+  p.set_description!(:long, :en, 'some long description in english')
+
+  p.description :ru # 'some description in russian'
+  p.description :long # 'some long description in english'
+
+=== Other
+
+Problems, comments, and suggestions all welcome. saksmlz@gmail.com
+
