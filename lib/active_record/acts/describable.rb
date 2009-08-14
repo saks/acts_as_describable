@@ -26,7 +26,7 @@ module ActiveRecord
 
 				connection.select_value("
 					select
-						#{options[:form]}_text
+						#{options[:form].to_s}_text
 					from
 						#{contruct_table_name}
 					where
@@ -67,7 +67,6 @@ module ActiveRecord
 			def contruct_table_name
 				self.class.to_s.downcase + '_descriptions'
 			end
-
 
     end#Describable
   end#Acts
