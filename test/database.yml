@@ -1,19 +1,19 @@
 sqlite:
   adapter: sqlite
-  dbfile: vendor/plugins/acts_as_describable/test/acts_as_describable_plugin.sqlite.db
+  dbfile: vendor/plugins/acts_as_describable/test/rails_plugin_test.sqlite.db
 sqlite3:
   adapter: sqlite3
-  dbfile: vendor/plugins/acts_as_describable/test/acts_as_describable_plugin.sqlite3.db
+  dbfile: vendor/plugins/acts_as_describable/test/rails_plugin_test.sqlite3.db
 postgresql:
   adapter: postgresql
-  username: postgres
-  password: postgres
-  database: acts_as_describable_plugin_test
+  username: rails
+  password:
+  database: rails_plugin_test
   min_messages: ERROR
 mysql:
   adapter: mysql
   host: localhost
-  username: root
+  username: rails
   password:
-  database: test_db
+  database: rails_plugin_test
 
