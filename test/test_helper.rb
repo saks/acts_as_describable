@@ -10,10 +10,13 @@ require 'test_help'
 
 class ActiveSupport::TestCase
 
+	self.use_transactional_fixtures = true
+
 	def self.load_schema
 		config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
 		ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
-		db_adapter = ENV['DB']
+#		db_adapter = ENV['DB']
+		db_adapter = 'mysql' #FIXME: it works now only with mysql
 		# no db passed, try one of these fine config-free DBs before bombing.
 		db_adapter ||=
 		  begin
@@ -32,7 +35,7 @@ class ActiveSupport::TestCase
 		end
 		ActiveRecord::Base.establish_connection(config[db_adapter])
 		load(File.dirname(__FILE__) + "/schema.rb")
-	#  require File.dirname(__FILE__) + '/../rails/init.rb'
+		Fixtures.create_fixtures(FIXTURES_PATH, 'sites')
 	end
 
 end
